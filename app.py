@@ -4,6 +4,12 @@
 # jsonify lets us send JSON HTTP responses
 from flask import Flask, jsonify
 
+# in python you import a file and you get everything in the "global scope" of that file
+# so this statement imports all variables and methods from that file as properties on the models object (e.g. models.initialize() is available here)
+# noe we did not explicitly export anything in models.py
+# google 'namespacing in python'
+import models
+
 DEBUG = True # primt nice helpful error messages since we're in development
 PORT = 8000
 
@@ -53,4 +59,7 @@ def say_hello(username): # this func takes URL param as arg
 # this is like app.listen() in express -- at the bottom
 # __name__ being '__main__' here mean sthat we just ran this file as opposed to exporting it and importing it somewhere else
 if __name__=='__main__':
+	# when we start the app set up our tables (if necessary) as defined in models.py
+	# remember in express we required db.js before app.listen
+	models.initialize()
 	app.run(debug=DEBUG, port=PORT)

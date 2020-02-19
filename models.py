@@ -1,3 +1,5 @@
+import datetime
+
 # all our models will go in this file
 
 # peewee is similar ot mongoose
@@ -24,9 +26,11 @@ class Dog(Model):
 	breed = CharField()
 	# this is how you specify default values
 	created_at = DateTimeField(default=datetime.datetime.now) #mistake on purpose
+	# we often need to import things in python that might be built in in other languages
+	# this keeps python lightweight
 
 	# special constructor that gives our class instructions on how to connect to a specific database
-	class Mega:
+	class Meta:
 		database = DATABASE # use the DB defined above as DATABASE for this model
 
 # define a method that will get called in app.py to set up DBs/connection
