@@ -7,6 +7,11 @@ from flask import Blueprint
 # second arg is its import_name
 dogs = Blueprint('dogs', 'dogs')
 
-@dogs.route('/')
+@dogs.route('/', methods=['GET'])
 def dogs_index():
 	return "dogs resource working"
+
+# dogs CREATE route
+@ dogs.route('/', methods=['POST'])
+def create_dog():
+	retunr "you hit dog create route"
