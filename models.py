@@ -9,8 +9,8 @@ from peewee import *
 # and
 # Model -- the Model() class is what we will inherit from when defining our models (similar to using some stuff from the mongoos module when creating a schema and then a model in mongoose)
 
-# sqlite is a way to ha a "database" that's just stored in a file
-# it's great fo rdevelopment because you can have easily portable data (on git, eg)
+# sqlite is a way to have a "database" that's just stored in a file
+# it's great for development because you can have easily portable data (on git, eg)
 # later when deploying, we will change this to psql
 DATABASE = SqliteDatabase('dogs.sqlite')
 # analogous to MONGO_DB_URL = 'mongodb://localhost/dogs', {...}

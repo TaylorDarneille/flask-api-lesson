@@ -4,6 +4,8 @@
 # jsonify lets us send JSON HTTP responses
 from flask import Flask, jsonify
 
+from resources.dogs import dogs # import blueprint from ./resources/dogs
+
 # in python you import a file and you get everything in the "global scope" of that file
 # so this statement imports all variables and methods from that file as properties on the models object (e.g. models.initialize() is available here)
 # noe we did not explicitly export anything in models.py
