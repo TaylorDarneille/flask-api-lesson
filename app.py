@@ -22,6 +22,19 @@ app = Flask(__name__)
 # analogous to app.use('/dogs', dogController)
 app.register_blueprint(dogs, url_prefix='/api/v1/dogs')
 
+# we dont want ot hog up the SQL connection pool so we should connect to the DB before every request and close the db connection after every request
+@app.before_request # use this decorator to cause a function to run before reqs
+def before_request():
+	"""Connect to the db before each request"""
+	# store the database as a global var in g
+	g.db=models.DATABASE
+	g.db.connect()
+
+@app.after_request # use this decorator to cause a function to run after reqs
+def after_request(response):
+	"""Close the db connection after each request"""
+	g.db.close()
+	return response # go ahead and send the response back to client (in our case this will be some JSON)
 
 # here's how you write a route in flask
 # note the default URL ends in /
