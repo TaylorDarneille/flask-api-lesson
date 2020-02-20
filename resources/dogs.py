@@ -14,4 +14,4 @@ def dogs_index():
 # dogs CREATE route
 @ dogs.route('/', methods=['POST'])
 def create_dog():
-	retunr "you hit dog create route"
+	return "you hit dog create route"
