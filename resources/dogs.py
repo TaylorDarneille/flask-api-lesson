@@ -9,6 +9,9 @@ from flask import Blueprint, request, jsonify
 # this is some useful extra tools that come with peewee
 from playhouse.shortcuts import model_to_dict
 
+# blueprint is a way to modularize apps, and group related functinoality
+# https://flask.pallersprojects.com/en/1.1.x/tutorial/views/
+# we are using blueprints to make something analogous to a controller
 # first arg is the blueprint's name
 # second arg is its import_name
 dogs = Blueprint('dogs', 'dogs')

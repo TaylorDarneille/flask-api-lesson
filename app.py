@@ -22,8 +22,23 @@ PORT = 8000
 # instantiating the Flask class
 app = Flask(__name__)
 
+# CORS = Cross Origin Resource Sharing
+# a web domain is an "origin"
+# This app is localhost:8000, that's an origin
+# our React app is localhouse:3000, that's a different origin
+# Browsers implement CORS to prevent a JS app from sending requests to origins other than the one the browser originally went to to get the JS
+# (i.e. say some JS tries to send data to some nefarious 3rd party)
+# configuring CORS lets browser say "here's who I'm expecting to hear from"
+# (certain origins)
+# first arg -- we add cors to blueprints
+# second arg -- list of allowed origins
+# third arg -- lets us accept requests with cookies attached, this allows us to use sessions for auth
+CORS(dogs, origins=['http://localhost:3000'], supports_credentials=True)
+
+# we are using blueprints to make "controllers"
 # "use this bluprint (component/piece/section of the app) to handle the dog stuff"
 # analogous to app.use('/dogs', dogController)
+# the point of the api v no is to let you build an upgraded API with a different url prefix, adn let yoru old API remain intact so that you don't break a bunch of apps already built on top of yoru old API with the old URLS
 app.register_blueprint(dogs, url_prefix='/api/v1/dogs')
 
 # we dont want ot hog up the SQL connection pool so we should connect to the DB before every request and close the db connection after every request
