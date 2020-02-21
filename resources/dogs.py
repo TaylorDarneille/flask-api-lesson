@@ -89,5 +89,28 @@ def delete_dog(id):
 		status=200
 	), 200
 
+# dogs UPDATE route
+@dogs.route('/<id>', methods=['PUT'])
+def updateDog(id):
+	payload = request.get_json()
+	update_query = models.Dog.update(
+		name=payload['name'],
+		breed=payload['breed'],
+		owner=payload['owner']
+	).where(models.Dog.id==id)
+	# fun bonus see if you can write this shorter using the unpack operator:
+	# https://codeyarns.github.io/tech/2012-04-25-upack-operator-in-python.html
+	# the above query could be written like this
+	update_query.execute()
+
+	# to include the updated data (for the benefit of the front end developers), the way we have it written, we'd need to do another query
+	updated_dog = models.Dog.get_by_id(id)
+
+	return jsonify(
+		data=model_to_dict(updated_dog),
+		message="Successfully udpated dog with id {}".format(id),
+		status=200
+	), 200
+
 
 
