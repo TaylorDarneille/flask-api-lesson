@@ -18,14 +18,31 @@ def dogs_index():
 	"""get all the dogs from the database as JSON"""
 	all_dogs_query = models.Dog.select()
 	# What is this thing we get back?
-	print("")
-	print("building dogs index")
-	print(all_dogs_query) # looks like sequel
-	# print(all_dogs_query[0])
-	print(type(all_dogs_query)) # http://docs.peewee-orm.com/en/latest/peewee/api.html#ModelSelect
-	print(all_dogs_query.__dict__) # looks like a query
-	print (model_to_dict(all_dogs_query[0])) 
-	return "dogs resource working"
+	# print("")
+	# print("building dogs index")
+	# print(all_dogs_query) # looks like sequel
+	# print(all_dogs_query[0]) # appears to be a dog
+	# print(type(all_dogs_query)) # http://docs.peewee-orm.com/en/latest/peewee/api.html#ModelSelect
+	# print(all_dogs_query.__dict__) # looks like a query
+	# print (model_to_dict(all_dogs_query[0])) # definitely a dog!
+	
+	# we need a list of dictionaries ...
+	# list_of_dog_dicts = []
+	# for item in all_dogs_query:
+	# 	print("")
+	# 	print(item) # id?
+	# 	print(model_to_dict(item))
+	# 	list_of_dog_dicts.append(model_to_dict(item))
+	
+
+	# the above work can be also done using list comprehension
+	dog_dicts = [model_to_dict(d) for d in all_dogs_query]
+
+	return jsonify(
+		data=dog_dicts,
+		message=f"Successfully retrieved {len(dog_dicts)} dogs",
+		status=200
+	), 200
 
 
 
