@@ -15,7 +15,19 @@ dogs = Blueprint('dogs', 'dogs')
 
 @dogs.route('/', methods=['GET'])
 def dogs_index():
+	"""get all the dogs from the database as JSON"""
+	all_dogs_query = models.Dog.select()
+	# What is this thing we get back?
+	print("")
+	print("building dogs index")
+	print(all_dogs_query) # looks like sequel
+	# print(all_dogs_query[0])
+	print(type(all_dogs_query)) # http://docs.peewee-orm.com/en/latest/peewee/api.html#ModelSelect
+	print(all_dogs_query.__dict__) # looks like a query
+	print (model_to_dict(all_dogs_query[0])) 
 	return "dogs resource working"
+
+
 
 # dogs CREATE route
 @ dogs.route('/', methods=['POST'])

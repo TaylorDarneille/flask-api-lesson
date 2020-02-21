@@ -3,6 +3,10 @@
 # g lets us use global variable for the life of (i.e. in the context of )
 from flask import Flask, jsonify, g
 
+# get a pakage that will let us handle CORS
+# https://flask-cors.readthedocs.io.en/latest/
+from flask_cors import CORS
+
 from resources.dogs import dogs # import blueprint from ./resources/dogs
 
 # in python you import a file and you get everything in the "global scope" of that file

@@ -25,7 +25,7 @@ class Dog(Model):
 	owner = CharField() # string for now, later we will implement a relation
 	breed = CharField()
 	# this is how you specify default values
-	created_at = DateTimeField(default=datetime.datetime.now) #mistake on purpose
+	created_at = DateTimeField(default=datetime.datetime.now) # mistake on purpose
 	# we often need to import things in python that might be built in in other languages
 	# this keeps python lightweight
 
