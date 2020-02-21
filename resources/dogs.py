@@ -76,3 +76,18 @@ def create_dog():
 
 	# notice you can add 201 to the return and you will send a proper HTTP status cod
 	return jsonify(data=dog_dict, status={'message': 'Successfully created dog!'}), 201
+
+# dog destroy route
+@dogs.route('/<id>', methods=['Delete'])
+def delete_dog(id):
+	# you are trying to delete dog with the following id
+	delete_query = models.Dog.delete().where(models.Dog.id==id)
+	delete_query.execute() # you need this for delete and upate
+	return jsonify(
+		data = {},
+		message="Successfully deleted dog with id {}".format(id),
+		status=200
+	), 200
+
+
+
