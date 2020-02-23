@@ -47,8 +47,6 @@ def dogs_index():
 		status=200
 	), 200
 
-
-
 # dogs CREATE route
 @ dogs.route('/', methods=['POST'])
 def create_dog():

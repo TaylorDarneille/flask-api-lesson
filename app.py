@@ -41,6 +41,18 @@ login_manager = LoginManager()
 #3. actually connect the app with teh login manager
 login_manager.init_app(app)
 
+# in register and login we did login_user(user that was found or created)
+# that puts the ID of tha tuser in session
+# to use the user object use id that is, you must define a callback for user_loader(part of login manager) to us
+# userloader will use this callback to load the user object
+# see https://flask-login.readthedocs.io.en/latest/#how-it-works
+@login_manager.user_loader
+def load_user(userid):
+	try:
+		return models.User.get(models.User.id == userid)
+	except models.DoesNotExist:
+		return None
+
 # CORS = Cross Origin Resource Sharing
 # a web domain is an "origin"
 # This app is localhost:8000, that's an origin

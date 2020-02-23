@@ -3,7 +3,7 @@ import models
 
 from flask import Blueprint, request, jsonify
 from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_login import login_user
+from flask_login import login_user, current_user
 # login_user is a funciton tha twill do the session stuff we did manually in express
 from playhouse.shortcuts import model_to_dict
 
@@ -141,3 +141,16 @@ def user_index():
 	print(user_dicts_list)
 
 	return jsonify(data=user_dicts_list), 200
+
+# teaching tool --- route ot show which user is logged in
+# demonstrating how to use current_user
+# this requires user_loader to be set up in app.py
+@users.route('/logged_in', methods=['GET'])
+def get_logged_in_user():
+	# READ THIS https://flask-login.readthedocs.io.en/latest/#flask_login.current_user
+	# because we called login_user and set up user_loader
+	print(current_user) # this i sthe logged in user
+	print(type(current_user)) # <class 'werkzeug.local.LocalProxy> -- google it if you're interested
+	user_dict = model_to_dict(current_user)
+	print(user_dict)
+	return jsonify(data=user_dict), 200
