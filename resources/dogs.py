@@ -48,12 +48,13 @@ def dogs_index():
 
 	return jsonify(
 		data=current_user_dog_dicts,
-		message=f"Successfully retrieved {len(current_user_dog_dicts)} dogs",
+		message=f"Successfully retrieved {len(current_user_dog_dicts)} dogs for {current_user.email}",
 		status=200
 	), 200
 
 # dogs CREATE route
 @ dogs.route('/', methods=['POST'])
+@login_required
 def create_dog():
 	# .get_json() attatched to request object will extract the JSON from the request body
 	payload = request.get_json()
@@ -86,40 +87,83 @@ def create_dog():
 	return jsonify(data=dog_dict, status={'message': 'Successfully created dog!'}), 201
 
 # dog destroy route
-@dogs.route('/<id>', methods=['Delete'])
+@dogs.route('/<id>/', methods=['Delete'])
+@login_required
 def delete_dog(id):
 	# you are trying to delete dog with the following id
-	delete_query = models.Dog.delete().where(models.Dog.id==id)
-	delete_query.execute() # you need this for delete and upate
-	return jsonify(
-		data = {},
-		message="Successfully deleted dog with id {}".format(id),
-		status=200
-	), 200
+	# delete_query = models.Dog.delete().where(models.Dog.id==id)
+	# delete_query.execute() # you need this for delete and upate
+	
+	# first, get the dog
+	dog_to_delete = models.Dog.get_by_id(id)
+	print(dog_to_delete)
+	print(dog_to_delete.name)
+	print(type(dog_to_delete))
+
+	# if the owner matches
+	if current_user.id == dog_to_delete.owner.id:
+		# delete the dog
+		# another way to delete stuff http://docs.peewee-orm.com/en/latest/peewee/querying.html#deleting-records
+		dog_to_delete.delete_instance()
+
+		return jsonify(
+			data = {},
+			message="Successfully deleted dog with id {}".format(id),
+			status=200
+		), 200
+
+	else: 
+		return jsonify(
+			data = {'error': 'Forbidden'},
+			message="Dog's owner_id does not match that of logged in user. User can only delete their own dog.",
+			status=403
+		), 403
 
 # dogs UPDATE route
-@dogs.route('/<id>', methods=['PUT'])
+@dogs.route('/<id>/', methods=['PUT'])
+@login_required # this shouldn't work at all if not logged in
 def updateDog(id):
 	payload = request.get_json()
-	print(request)
-	update_query = models.Dog.update(
-		name=payload['name'],
-		breed=payload['breed'],
-		owner=payload['owner']
-	).where(models.Dog.id==id)
-	# fun bonus see if you can write this shorter using the unpack operator:
-	# https://codeyarns.github.io/tech/2012-04-25-upack-operator-in-python.html
-	# the above query could be written like this
-	update_query.execute()
+	# print(request)
+	# update_query = models.Dog.update(
+	# 	name=payload['name'],
+	# 	breed=payload['breed'],
+	# 	owner=payload['owner']
+	# ).where(models.Dog.id==id)
+	# # fun bonus see if you can write this shorter using the unpack operator:
+	# # https://codeyarns.github.io/tech/2012-04-25-upack-operator-in-python.html
+	# # the above query could be written like this
+	# update_query.execute()
 
-	# to include the updated data (for the benefit of the front end developers), the way we have it written, we'd need to do another query
-	updated_dog = models.Dog.get_by_id(id)
+	# # to include the updated data (for the benefit of the front end developers), the way we have it written, we'd need to do another query
+	# updated_dog = models.Dog.get_by_id(id)
 
-	return jsonify(
-		data=model_to_dict(updated_dog),
-		message="Successfully udpated dog with id {}".format(id),
-		status=200
-	), 200
+	#get the dog
+	dog = models.Dog.get_by_id(id)
+
+	# see if this dogs user is the logged in user -- if so
+	if dog.owner.id == current_user.id:
+		# update the fields that were included in the request body
+		# you must include an else or you'll get an error
+		dog.name=payload['name'] if 'name' in payload else None
+		dog.breed=payload['breed'] if 'breed' in payload else None
+		dog.save()
+		# http://docs.peewee-orm.com/en/latest/peewee/querying.html#updating-existing-records
+		dog_dict = model_to_dict(dog)
+
+		return jsonify(
+			data=dog_dict,
+			message="Successfully udpated dog with id {}".format(id),
+			status=200
+		), 200
+	# if this dog does not belong to logged in user
+	else:
+		#return you can only update your own dogs
+		return jsonify(
+			data={'error': 'Forbidden'},
+			message=f"Dog's owner_id ({dog.owner.id}) does not match that of logged in user ({current_user.id}). User can only update their own dogs.",
+			status=403
+		), 403
 
 # route that will take an id and let us create a dog associated with the owner that has that id
 @dogs.route('/<owner_id>', methods=['POST'])
