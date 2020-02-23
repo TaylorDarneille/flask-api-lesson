@@ -7,8 +7,13 @@ from flask import Flask, jsonify, g
 # https://flask-cors.readthedocs.io.en/latest/
 from flask_cors import CORS
 
-from resources.dogs import dogs # import blueprint from ./resources/dogs
+# we need to import and configure the login manager
+# https://flask-login.readthedocs.io.en/latest/#flask_login.LoginManager
+# LM is the main tool for coordinating sessions/login stuff in our app
+from flask_login import LoginManager
 
+from resources.dogs import dogs # import blueprint from ./resources/dogs
+from resources.users import users
 # in python you import a file and you get everything in the "global scope" of that file
 # so this statement imports all variables and methods from that file as properties on the models object (e.g. models.initialize() is available here)
 # noe we did not explicitly export anything in models.py
@@ -22,6 +27,20 @@ PORT = 8000
 # instantiating the Flask class
 app = Flask(__name__)
 
+#according to this
+# https://flask-login.readthedocs.io/en/latest/#configuring-your-application
+# we need to do several things
+
+# 1. set up a secret key
+# https://flask.palletprojects.com/en/1.1.x.quickstart/#sessions
+app.secret_key = "Good Tea. Nice House. This is very secret."
+
+# 2. instantiate LoginManager to get a login_manager
+login_manager = LoginManager()
+
+#3. actually connect the app with teh login manager
+login_manager.init_app(app)
+
 # CORS = Cross Origin Resource Sharing
 # a web domain is an "origin"
 # This app is localhost:8000, that's an origin
@@ -34,12 +53,16 @@ app = Flask(__name__)
 # second arg -- list of allowed origins
 # third arg -- lets us accept requests with cookies attached, this allows us to use sessions for auth
 CORS(dogs, origins=['http://localhost:3000'], supports_credentials=True)
+CORS(users, origins=['http://localhost:3000'], supports_credentials=True)
+
 
 # we are using blueprints to make "controllers"
 # "use this bluprint (component/piece/section of the app) to handle the dog stuff"
 # analogous to app.use('/dogs', dogController)
 # the point of the api v no is to let you build an upgraded API with a different url prefix, adn let yoru old API remain intact so that you don't break a bunch of apps already built on top of yoru old API with the old URLS
 app.register_blueprint(dogs, url_prefix='/api/v1/dogs')
+app.register_blueprint(users, url_prefix='/api/v1/users')
+
 
 # we dont want ot hog up the SQL connection pool so we should connect to the DB before every request and close the db connection after every request
 @app.before_request # use this decorator to cause a function to run before reqs

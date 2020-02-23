@@ -25,8 +25,8 @@ DATABASE = SqliteDatabase('dogs.sqlite')
 # we could write these ourselves, adn/or we could also have our User class inherit from UserMixin (in addition to pweewee's Model class), which will provide/implement them for us
 # https://flask-login.readthedocs.io.en/latest/#your-user-class
 class User(UserMixin, Model):
-	username=Charfield(unique=True)
-	email = Charfield(unique=True)
+	username=CharField(unique=True)
+	email = CharField(unique=True)
 	password = CharField()
 
 	class Meta: database=DATABASE
