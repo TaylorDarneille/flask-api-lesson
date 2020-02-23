@@ -6,6 +6,8 @@ from flask import Blueprint, request, jsonify
 # we can use this object to get the json or form data or whatever
 # reassigned on every request that has a body
 
+from flask_login import current_user
+
 # this is some useful extra tools that come with peewee
 from playhouse.shortcuts import model_to_dict
 
@@ -54,8 +56,12 @@ def create_dog():
 	payload = request.get_json()
 	print(payload)
 
-	# us our peewee model to add something to database
-	dog = models.Dog.create(name=payload['name'], owner=payload['owner'], breed=payload['breed'])
+	# use our peewee model to add something to database
+	dog = models.Dog.create(
+		name=payload['name'],
+		breed=payload['breed'], 
+		owner=current_user.id
+	)
 
 	print(dog) # just prints the ID -- check in sqlite3 on the command line
 			   # run sqlite3 dogs.sqlite to open a CLI that lets you enter the SQL queries
@@ -71,6 +77,7 @@ def create_dog():
 	# we can use model_to_dict from playhouse to convert the model to a dict
 
 	dog_dict=model_to_dict(dog)
+	dog_dict['owner'].pop('password')
 
 	# notice you can add 201 to the return and you will send a proper HTTP status cod
 	return jsonify(data=dog_dict, status={'message': 'Successfully created dog!'}), 201
