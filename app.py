@@ -53,6 +53,17 @@ def load_user(userid):
 	except models.DoesNotExist:
 		return None
 
+# https://flask-login.readthedocs.io/en/latest/#customizing-the-login-process
+@login_manager.unauthorized_handler
+def unautheroized():
+	return jsonify(
+		data={
+			'error': 'User not logged in'
+		},
+		message="You must be logged in to access that resource",
+		status=401
+	), 401
+
 # CORS = Cross Origin Resource Sharing
 # a web domain is an "origin"
 # This app is localhost:8000, that's an origin

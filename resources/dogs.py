@@ -6,7 +6,7 @@ from flask import Blueprint, request, jsonify
 # we can use this object to get the json or form data or whatever
 # reassigned on every request that has a body
 
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 # this is some useful extra tools that come with peewee
 from playhouse.shortcuts import model_to_dict
@@ -19,6 +19,7 @@ from playhouse.shortcuts import model_to_dict
 dogs = Blueprint('dogs', 'dogs')
 
 @dogs.route('/', methods=['GET'])
+@login_required # make this route unavailable to users who aren't logged in
 def dogs_index():
 	"""get all the dogs from the database as JSON"""
 	all_dogs_query = models.Dog.select()
@@ -44,7 +45,6 @@ def dogs_index():
 	# the s work can be also done using list comprehension
 	current_user_dog_dicts = [model_to_dict(d) for d in current_user.dogs]
 	print(current_user_dog_dicts)
-
 
 	return jsonify(
 		data=current_user_dog_dicts,
