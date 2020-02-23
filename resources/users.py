@@ -142,7 +142,7 @@ def user_index():
 
 	return jsonify(data=user_dicts_list), 200
 
-# teaching tool --- route ot show which user is logged in
+# teaching tool --- route to show which user is logged in
 # demonstrating how to use current_user
 # this requires user_loader to be set up in app.py
 @users.route('/logged_in', methods=['GET'])

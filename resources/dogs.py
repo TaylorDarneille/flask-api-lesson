@@ -39,13 +39,16 @@ def dogs_index():
 	# 	print(model_to_dict(item))
 	# 	list_of_dog_dicts.append(model_to_dict(item))
 	
+	"""get all the dogs from the db associated with the logged in user as JSON"""
 
-	# the above work can be also done using list comprehension
-	dog_dicts = [model_to_dict(d) for d in all_dogs_query]
+	# the s work can be also done using list comprehension
+	current_user_dog_dicts = [model_to_dict(d) for d in current_user.dogs]
+	print(current_user_dog_dicts)
+
 
 	return jsonify(
-		data=dog_dicts,
-		message=f"Successfully retrieved {len(dog_dicts)} dogs",
+		data=current_user_dog_dicts,
+		message=f"Successfully retrieved {len(current_user_dog_dicts)} dogs",
 		status=200
 	), 200
 
