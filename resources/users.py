@@ -114,4 +114,30 @@ def login():
 
 # NOTE: as it is right now, you can put in the wrong username but have the right email and password and get logged in
 
+# we may delete this route later, for now we will use it ot help us manually add a dog using the relation
+# it will list all the users
+@users.route('/all/', methods=['GET'])
+def user_index():
+	users = models.User.select()
 
+	user_dicts = [model_to_dict(u) for u in users]
+	print(user_dicts) # observe: these contain password
+
+	# let's delete the passwords and not send them back to the user
+	# excuse to see how map() works in python
+	# define a callback to be run on every dict in user_dicts
+	def remove_password(u):
+		u.pop('password')
+		return u
+
+	user_dicts_without_pw = map(remove_password, user_dicts)
+
+	# this is what is returned
+	print(user_dicts_without_pw)
+	# it is a map, not a list
+	print(type(user_dicts_without_pw))
+	# so we should convert it back
+	user_dicts_list = list(user_dicts_without_pw)
+	print(user_dicts_list)
+
+	return jsonify(data=user_dicts_list), 200
