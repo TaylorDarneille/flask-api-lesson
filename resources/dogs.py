@@ -52,6 +52,32 @@ def dogs_index():
 		status=200
 	), 200
 
+# dog show route
+@dogs.route('/<id>/', methods=['GET'])
+def get_one_dog(id):
+	dog=models.Dog.get_by_id(id)
+
+	#if user not logged in they just see name and breed
+	if not current_user.is_authenticated:
+		return jsonify(
+			data={
+				'name': dog.name,
+				'breed': dog.breed
+			},
+			message="Registered users can access more info about this dog",
+			status=200
+		), 200
+	# if they are logged in they see name, breed, adn owner info
+	else:
+		dog_dict=model_to_dict(dog)
+		dog_dict.pop('created_at')
+
+	return jsonify(
+		data=dog_dict,
+		message="Found dog with id {}".format(dog.id),
+		status=200
+	), 200
+
 # dogs CREATE route
 @ dogs.route('/', methods=['POST'])
 @login_required
