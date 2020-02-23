@@ -149,11 +149,27 @@ def user_index():
 def get_logged_in_user():
 	# READ THIS https://flask-login.readthedocs.io.en/latest/#flask_login.current_user
 	# because we called login_user and set up user_loader
-	print(current_user) # this i sthe logged in user
-	print(type(current_user)) # <class 'werkzeug.local.LocalProxy> -- google it if you're interested
-	user_dict = model_to_dict(current_user)
-	print(user_dict)
-	return jsonify(data=user_dict), 200 
+	# print(current_user) # this i sthe logged in user
+	# print(type(current_user)) # <class 'werkzeug.local.LocalProxy> -- google it if you're interested
+	# user_dict = model_to_dict(current_user)
+	# print(user_dict)
+	# return jsonify(data=user_dict), 200 
+
+	# you can TELL WHETHER A USER IS LOGGED IN with current_user.is_authenticated
+	if not current_user.is_authenticated:
+		return jsonify(
+			data={},
+			message="No user is currently logged in",
+			status=401
+		), 401
+	else: # current user is logged in
+		user_dict = model_to_dict(current_user)
+		user_dict.pop('password')
+		return jsonify(
+			data=user_dict,
+			message=f"Current user is {user_dict['email']}",
+			status=200
+		), 201		
 
 # we should have a logout route
 # you may have noticed that the session persists (i.e. user is still logged in)
@@ -175,3 +191,7 @@ def logout():
 		message="Successfully logged out.",
 		status=200
 	), 200
+
+# ex: log in, then hit GET /api/vi/logged_in, then hit GET /api/v1/users/logout to logout
+# then hit GET/api/v1/logged_in again (you get that AnynonmousUser Mixin error again)
+# see this: https://flask-login-readthedocs.io/en/latest/#anonymous-user
