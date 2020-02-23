@@ -93,6 +93,7 @@ def delete_dog(id):
 @dogs.route('/<id>', methods=['PUT'])
 def updateDog(id):
 	payload = request.get_json()
+	print(request)
 	update_query = models.Dog.update(
 		name=payload['name'],
 		breed=payload['breed'],
