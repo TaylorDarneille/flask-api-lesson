@@ -113,5 +113,28 @@ def updateDog(id):
 		status=200
 	), 200
 
+# route that will take an id and let us create a dog associated with the owner that has that id
+@dogs.route('/<owner_id>', methods=['POST'])
+def create_dog_with_owner(owner_id):
+	payload = request.get_json()
+	print(payload)
+
+	# create dog associated with <owner_id>
+	dog = models.Dog.create(
+		name=payload['name'],
+		breed=payload['breed'],
+		owner=owner_id
+	)
+
+	dog_dict = model_to_dict(dog)
+
+	#remove password from the owner
+	dog_dict['owner'].pop('password')
+
+	return jsonify(
+		data=dog_dict,
+		message="Successfully created dog with owner",
+		status=201
+	), 201
 
 
