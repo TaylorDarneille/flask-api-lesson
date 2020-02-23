@@ -3,7 +3,7 @@ import models
 
 from flask import Blueprint, request, jsonify
 from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, logout_user
 # login_user is a funciton tha twill do the session stuff we did manually in express
 from playhouse.shortcuts import model_to_dict
 
@@ -153,4 +153,25 @@ def get_logged_in_user():
 	print(type(current_user)) # <class 'werkzeug.local.LocalProxy> -- google it if you're interested
 	user_dict = model_to_dict(current_user)
 	print(user_dict)
-	return jsonify(data=user_dict), 200
+	return jsonify(data=user_dict), 200 
+
+# we should have a logout route
+# you may have noticed that the session persists (i.e. user is still logged in)
+# after restarting the server
+# weird. you can read about it here in the flask docs:
+# https://flask.palletsprojects.com/en/1.1.x/api/#sessions
+# and here in the flask-login docs:
+# https://flask-login.readthedocs.io/en/latest/#remember-me
+# https://flask-login.readthedocs.io/en/latest/#fresh-logins
+# https://flask-login.readthedocs.io/en/latest/#session-protection
+# https://flask-login.readthedocs.io/en/latest/#disabling-session-cookie-for-apis
+# anyway....
+@users.route('/logout', methods=['GET'])
+def logout():
+	# following this https://flask-login.readthedocs.io/en/latest/#login-example
+	logout_user() # this must be imported
+	return jsonify(
+		data={},
+		message="Successfully logged out.",
+		status=200
+	), 200
