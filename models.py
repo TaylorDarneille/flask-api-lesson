@@ -37,7 +37,13 @@ class User(UserMixin, Model):
 # http://docs.peewee-orm.com/en/latest/peewee/models.html#fields
 class Dog(Model):
 	name = CharField() # string
-	owner = CharField() # string for now, later we will implement a relation
+	
+	# to set up our 1:M relationship between users and dogs we will need a foreign key
+	# http://docs.peewee-orm.com/en/latest/peewee/example.html#models
+	owner = ForeignKeyField(User, backref='dogs')
+	# if we had a dog model instance in a variable called some_dog, the FK will let us go some_dog.owner to get the owner
+	# and if we had a user model instance in a var called some_user, the bakref will allow us ot go some_user.dogs ot get a list of dog instances
+
 	breed = CharField()
 	# this is how you specify default values
 	created_at = DateTimeField(default=datetime.datetime.now) # mistake on purpose
