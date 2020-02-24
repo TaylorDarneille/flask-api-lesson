@@ -66,8 +66,8 @@ def unautheroized():
 # first arg -- we add cors to blueprints
 # second arg -- list of allowed origins
 # third arg -- lets us accept requests with cookies attached, this allows us to use sessions for auth
-CORS(dogs, origins=['http://localhost:3000'], supports_credentials=True)
-CORS(users, origins=['http://localhost:3000'], supports_credentials=True)
+CORS(dogs, origins=['http://localhost:3000', 'https://react-dogs-client.herokuapp.com'], supports_credentials=True)
+CORS(users, origins=['http://localhost:3000', 'https://react-dogs-client.herokuapp.com'], supports_credentials=True)
 
 # blueprints <> controllers
 app.register_blueprint(dogs, url_prefix='/api/v1/dogs')
