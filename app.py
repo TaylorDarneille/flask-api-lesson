@@ -1,3 +1,9 @@
+import os
+
+if 'ON_HEROKU' in os.environ:
+	print('\non heroku!')
+	models.initialize()
+
 # from flask import Flask is like const express = require('express')
 # jsonify lets us send JSON HTTP responses
 # g lets us use global variable for the life of (i.e. in the context of )

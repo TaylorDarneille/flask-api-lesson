@@ -1,3 +1,4 @@
+import os
 import datetime
 
 # all our models will go in this file
@@ -14,12 +15,17 @@ from peewee import *
 # https://flask-login.readthedocs.io/en/latest/
 from flask_login import UserMixin
 
+# for deployment
+from playhouse.db_url import connect
 
-# sqlite is a way to have a "database" that's just stored in a file
-# it's great for development because you can have easily portable data (on git, eg)
-# later when deploying, we will change this to psql
-DATABASE = SqliteDatabase('dogs.sqlite')
-# analogous to MONGO_DB_URL = 'mongodb://localhost/dogs', {...}
+if 'ON_HEROKU' in os.environ:
+	DATABASE = connect(os.environ.get('DATABASE_URL'))
+else:
+	# sqlite is a way to have a "database" that's just stored in a file
+	# it's great for development because you can have easily portable data (on git, eg)
+	# later when deploying, we will change this to psql
+	DATABASE = SqliteDatabase('dogs.sqlite')
+	# analogous to MONGO_DB_URL = 'mongodb://localhost/dogs', {...}
 
 # to behave correcly in flask-login's session/login/etc functionality, the User class must have some methods and properties that Model from peewee doesn't have
 # we could write these ourselves, adn/or we could also have our User class inherit from UserMixin (in addition to pweewee's Model class), which will provide/implement them for us
